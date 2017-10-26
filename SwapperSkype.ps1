@@ -9,6 +9,13 @@ $ProcessName = "Skype"
 ##Command to start Skype APP W10
 $command = "start Skype:"
 
+# Creating a WScript.Shell onject  
+ $keyBoardObject = New-Object -ComObject WScript.Shell  
+# CAPSLOCK / SCROL LOCK /  Num Lock key Status   
+# Getting the status of Keys using .Net Object , this result of the ISkeyLock is in Boolean 
+# Capsock 
+ $capsLockKeySatus = [System.Windows.Forms.Control]::IsKeyLocked('CapsLock') 
+
 Function Get-SkypeHandle {
     Get-Process $ProcessName| 
         Select MainWindowHandle, Name
@@ -28,6 +35,14 @@ Function Swap-Window {
     Write-Host "Swapping to process: $($proc.Name) - handle: $($proc.MainWindowHandle)..."
     $win::SwitchToThisWindow([System.IntPtr]$proc.MainWindowHandle, $true)
 }
+
+if ( $capsLockKeySatus -eq $true )  
+{ 
+    Write-Host "Capslock key is on"  
+         
+    # if you want to ON the CapsLock {IF CAPSLOCK IS ALREADY OFF }, then please unComment the below Command. 
+        $keyBoardObject.SendKeys("{CAPSLOCK}") 
+}  
 
 if(Is-SkypeApp){
     Swap-Window
